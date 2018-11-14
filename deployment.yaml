@@ -42,6 +42,6 @@ spec:
     http:
       paths:
       - path: /
-        frontend:
+        backend:
           serviceName: demo-frontend-service
           servicePort: 80
