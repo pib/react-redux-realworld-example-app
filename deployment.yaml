@@ -1,0 +1,47 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-frontend-service
+spec:
+  selector:
+    app: demo-frontend
+  ports:
+  - port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-frontend
+  labels:
+    app: demo-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-frontend
+  template:
+    metadata:
+      labels:
+        app: demo-frontend
+    spec:
+      imagePullSecrets:
+      - name: pipeline-docker-registry
+      containers:
+      - name: frontend
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        ports:
+        - containerPort: 80
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: frontend-ingress
+spec:
+  rules:
+  - host: prod.demo.p1b.us
+    http:
+      paths:
+      - path: /
+        frontend:
+          serviceName: demo-frontend-service
+          servicePort: 80

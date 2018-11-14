@@ -1,0 +1,19 @@
+stages:
+- name: Setup
+  steps:
+    - runScriptConfig:
+        image: node
+        shellScript: |-
+          npm install
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: demo-frontend:${CICD_EXECUTION_SEQUENCE}
+      registry: 127.0.0.1:34331
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
+timeout: 60
