@@ -1,28 +1,28 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: demo-frontend-service
+  name: ${CICD_GIT_BRANCH}-demo-frontend-service
 spec:
   selector:
-    app: demo-frontend
+    app: ${CICD_GIT_BRANCH}-demo-frontend
   ports:
   - port: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-frontend
+  name: ${CICD_GIT_BRANCH}-demo-frontend
   labels:
-    app: demo-frontend
+    app: ${CICD_GIT_BRANCH}-demo-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-frontend
+      app: ${CICD_GIT_BRANCH}-demo-frontend
   template:
     metadata:
       labels:
-        app: demo-frontend
+        app: ${CICD_GIT_BRANCH}-demo-frontend
     spec:
       imagePullSecrets:
       - name: pipeline-docker-registry
@@ -35,13 +35,13 @@ spec:
 kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
-  name: frontend-ingress
+  name: ${CICD_GIT_BRANCH}-frontend-ingress
 spec:
   rules:
-  - host: prod.demo.p1b.us
+  - host: ${CICD_GIT_BRANCH}.demo.p1b.us
     http:
       paths:
       - path: /
         backend:
-          serviceName: demo-frontend-service
+          serviceName: ${CICD_GIT_BRANCH}-demo-frontend-service
           servicePort: 80
